@@ -1,15 +1,18 @@
-public abstract class State
+namespace FSM
 {
-    protected StateMachine _stateMachine;
-
-    public State(StateMachine stateMachine)
+    public abstract class State
     {
-        _stateMachine = stateMachine;
-    }
+        protected StateMachine _stateMachine;
+
+        public State(StateMachine stateMachine)
+        {
+            _stateMachine = stateMachine;
+        }
     
-    public abstract void OnEnter();
-    public abstract void OnUpdate();
-    public abstract void OnFixedUpdate();
-    public abstract void CheckSwitchState();
-    public abstract void OnExit();
+        public abstract void OnEnter();
+        public abstract void OnUpdate();
+        public abstract void OnFixedUpdate();
+        public abstract void CheckSwitchState();
+        public abstract void OnExit();
+    }
 }

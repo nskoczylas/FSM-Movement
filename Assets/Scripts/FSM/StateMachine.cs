@@ -1,27 +1,29 @@
-using System;
 using UnityEngine;
 
-public class StateMachine : MonoBehaviour
+namespace FSM
 {
-    public State CurrentState => _currentState;
-    protected State _currentState;
-
-    protected void Update()
+    public class StateMachine : MonoBehaviour
     {
-        _currentState.CheckSwitchState();
-        _currentState.OnUpdate();
-    }
+        public State CurrentState => _currentState;
+        protected State _currentState;
 
-    protected void FixedUpdate()
-    {
-        _currentState.OnFixedUpdate();
-    }
+        protected void Update()
+        {
+            _currentState.CheckSwitchState();
+            _currentState.OnUpdate();
+        }
 
-    public void SwitchState(State newState)
-    {
-        _currentState.OnExit();
+        protected void FixedUpdate()
+        {
+            _currentState.OnFixedUpdate();
+        }
 
-        _currentState = newState;
-        _currentState.OnEnter();
+        public void SwitchState(State newState)
+        {
+            _currentState.OnExit();
+
+            _currentState = newState;
+            _currentState.OnEnter();
+        }
     }
 }
