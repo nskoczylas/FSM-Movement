@@ -26,7 +26,7 @@ namespace Player
     ""name"": ""Controls"",
     ""maps"": [
         {
-            ""name"": ""Movement"",
+            ""name"": ""Game"",
             ""id"": ""fb1e29ca-8f9d-4e19-b24b-6f19359d79cf"",
             ""actions"": [
                 {
@@ -180,13 +180,13 @@ namespace Player
     ],
     ""controlSchemes"": []
 }");
-            // Movement
-            m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
-            m_Movement_View = m_Movement.FindAction("View", throwIfNotFound: true);
-            m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
-            m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
-            m_Movement_Sprint = m_Movement.FindAction("Sprint", throwIfNotFound: true);
-            m_Movement_Crouch = m_Movement.FindAction("Crouch", throwIfNotFound: true);
+            // Game
+            m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
+            m_Game_View = m_Game.FindAction("View", throwIfNotFound: true);
+            m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
+            m_Game_Jump = m_Game.FindAction("Jump", throwIfNotFound: true);
+            m_Game_Sprint = m_Game.FindAction("Sprint", throwIfNotFound: true);
+            m_Game_Crouch = m_Game.FindAction("Crouch", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -245,32 +245,32 @@ namespace Player
             return asset.FindBinding(bindingMask, out action);
         }
 
-        // Movement
-        private readonly InputActionMap m_Movement;
-        private List<IMovementActions> m_MovementActionsCallbackInterfaces = new List<IMovementActions>();
-        private readonly InputAction m_Movement_View;
-        private readonly InputAction m_Movement_Move;
-        private readonly InputAction m_Movement_Jump;
-        private readonly InputAction m_Movement_Sprint;
-        private readonly InputAction m_Movement_Crouch;
-        public struct MovementActions
+        // Game
+        private readonly InputActionMap m_Game;
+        private List<IGameActions> m_GameActionsCallbackInterfaces = new List<IGameActions>();
+        private readonly InputAction m_Game_View;
+        private readonly InputAction m_Game_Move;
+        private readonly InputAction m_Game_Jump;
+        private readonly InputAction m_Game_Sprint;
+        private readonly InputAction m_Game_Crouch;
+        public struct GameActions
         {
             private @Controls m_Wrapper;
-            public MovementActions(@Controls wrapper) { m_Wrapper = wrapper; }
-            public InputAction @View => m_Wrapper.m_Movement_View;
-            public InputAction @Move => m_Wrapper.m_Movement_Move;
-            public InputAction @Jump => m_Wrapper.m_Movement_Jump;
-            public InputAction @Sprint => m_Wrapper.m_Movement_Sprint;
-            public InputAction @Crouch => m_Wrapper.m_Movement_Crouch;
-            public InputActionMap Get() { return m_Wrapper.m_Movement; }
+            public GameActions(@Controls wrapper) { m_Wrapper = wrapper; }
+            public InputAction @View => m_Wrapper.m_Game_View;
+            public InputAction @Move => m_Wrapper.m_Game_Move;
+            public InputAction @Jump => m_Wrapper.m_Game_Jump;
+            public InputAction @Sprint => m_Wrapper.m_Game_Sprint;
+            public InputAction @Crouch => m_Wrapper.m_Game_Crouch;
+            public InputActionMap Get() { return m_Wrapper.m_Game; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
             public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(MovementActions set) { return set.Get(); }
-            public void AddCallbacks(IMovementActions instance)
+            public static implicit operator InputActionMap(GameActions set) { return set.Get(); }
+            public void AddCallbacks(IGameActions instance)
             {
-                if (instance == null || m_Wrapper.m_MovementActionsCallbackInterfaces.Contains(instance)) return;
-                m_Wrapper.m_MovementActionsCallbackInterfaces.Add(instance);
+                if (instance == null || m_Wrapper.m_GameActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_GameActionsCallbackInterfaces.Add(instance);
                 @View.started += instance.OnView;
                 @View.performed += instance.OnView;
                 @View.canceled += instance.OnView;
@@ -288,7 +288,7 @@ namespace Player
                 @Crouch.canceled += instance.OnCrouch;
             }
 
-            private void UnregisterCallbacks(IMovementActions instance)
+            private void UnregisterCallbacks(IGameActions instance)
             {
                 @View.started -= instance.OnView;
                 @View.performed -= instance.OnView;
@@ -307,22 +307,22 @@ namespace Player
                 @Crouch.canceled -= instance.OnCrouch;
             }
 
-            public void RemoveCallbacks(IMovementActions instance)
+            public void RemoveCallbacks(IGameActions instance)
             {
-                if (m_Wrapper.m_MovementActionsCallbackInterfaces.Remove(instance))
+                if (m_Wrapper.m_GameActionsCallbackInterfaces.Remove(instance))
                     UnregisterCallbacks(instance);
             }
 
-            public void SetCallbacks(IMovementActions instance)
+            public void SetCallbacks(IGameActions instance)
             {
-                foreach (var item in m_Wrapper.m_MovementActionsCallbackInterfaces)
+                foreach (var item in m_Wrapper.m_GameActionsCallbackInterfaces)
                     UnregisterCallbacks(item);
-                m_Wrapper.m_MovementActionsCallbackInterfaces.Clear();
+                m_Wrapper.m_GameActionsCallbackInterfaces.Clear();
                 AddCallbacks(instance);
             }
         }
-        public MovementActions @Movement => new MovementActions(this);
-        public interface IMovementActions
+        public GameActions @Game => new GameActions(this);
+        public interface IGameActions
         {
             void OnView(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
