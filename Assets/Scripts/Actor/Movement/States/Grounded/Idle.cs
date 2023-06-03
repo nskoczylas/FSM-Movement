@@ -5,17 +5,25 @@ namespace Actor.Movement.States.Grounded
 {
     public class Idle : MovementState
     {
-        protected float _cameraPitch = 0f;
-        
+        protected float _cameraPitch
+        {
+            get
+            {
+                return _stateMachine.CameraPitch;
+            }
+            set
+            {
+                _stateMachine.CameraPitch = value;
+            }
+        }
+
         public Idle(StateMachine stateMachine) : base(stateMachine)
         {
         }
 
         public override void OnEnter()
         {
-            Debug.Log("Entered IDLE STATE");
-
-            _cameraPitch = _stateMachine.CameraRig.rotation.x;
+            Debug.Log($"Entered: {this.GetType()}");
         }
 
         public override void OnUpdate()
@@ -29,10 +37,7 @@ namespace Actor.Movement.States.Grounded
 
         public override void CheckSwitchState()
         {
-            if (_stateMachine.MovementInput.Move.magnitude != 0)
-            {
-                Debug.Log("Switch state to moving.");
-            }
+            if (_stateMachine.MovementInput.Move.magnitude != 0) _stateMachine.SwitchState(_stateMachine.WalkState);
         }
 
         public override void OnExit()

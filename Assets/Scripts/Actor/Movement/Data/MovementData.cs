@@ -7,5 +7,6 @@ namespace Actor.Movement.Data
     public class MovementData : ScriptableObject
     {
         [field: SerializeField] public IdleData Idle { get; private set; }
+        [field: SerializeField] public WalkData Walk { get; private set; }
     }
 }

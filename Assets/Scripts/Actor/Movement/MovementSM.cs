@@ -22,6 +22,8 @@ namespace Actor.Movement
         private IMovementInput _movementInput;
 
         #endregion
+        
+        public float CameraPitch;
 
         public MovementData MovementSettings => _movementData;
         [SerializeField] private MovementData _movementData;
@@ -31,6 +33,9 @@ namespace Actor.Movement
         public Idle IdleState => _idle;
         private Idle _idle;
 
+        public Walk WalkState => _walk;
+        private Walk _walk;
+
         #endregion
         
         private void Awake()
@@ -38,6 +43,8 @@ namespace Actor.Movement
             _controller = gameObject.GetComponent<CharacterController>();
             
             CreateMovementInputFromPlayer();
+
+            CameraPitch = CameraRig.localRotation.x;
             
             CreateStates();
             SwitchState(_idle);
@@ -46,6 +53,7 @@ namespace Actor.Movement
         private void CreateStates()
         {
             _idle = new Idle(this);
+            _walk = new Walk(this);
         }
 
         private void CreateMovementInputFromPlayer()
