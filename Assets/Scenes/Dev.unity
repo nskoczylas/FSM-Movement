@@ -18894,6 +18894,7 @@ GameObject:
   - component: {fileID: 2050102860}
   - component: {fileID: 2050102862}
   - component: {fileID: 2050102861}
+  - component: {fileID: 2050102863}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -18932,6 +18933,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controller: {fileID: 2050102862}
   _cameraRig: {fileID: 1421349204}
+  CameraPitch: 0
   _movementData: {fileID: 11400000, guid: fc38681c509a61c4e95a2d029dd476bd, type: 2}
 --- !u!143 &2050102862
 CharacterController:
@@ -18951,6 +18953,25 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2050102863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050102859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8589e5c2342a42ff847bf97bd0a90d0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _originOffset: {x: 0, y: 0, z: 0}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _sphereRadius: 0
+  _sphereMaxDistance: 0
+  _rayMaxDistance: 0
 --- !u!1 &2083639816
 GameObject:
   m_ObjectHideFlags: 0
