@@ -10,6 +10,10 @@ namespace Actor.Movement
         // IsGrounded:
         public bool IsGrounded => _isGrounded;
         private bool _isGrounded;
+        
+        // Time since grounded:
+        public float TimeSinceGrounded => _timeSinceGrounded;
+        private float _timeSinceGrounded;
 
         // Distance to ground:
         public float DistanceToGround => _distanceToGround;
@@ -42,7 +46,6 @@ namespace Actor.Movement
 
         [SerializeField] private float _sphereRadius;
         [SerializeField] private float _sphereMaxDistance;
-        [SerializeField] private float _rayMaxDistance;
 
         #endregion
 
@@ -56,16 +59,42 @@ namespace Actor.Movement
             
             ProbeUsingSphere();
             ProbeUsingRay();
+            
+            SetTimeSinceGrounded();
+        }
+
+        private void SetTimeSinceGrounded()
+        {
+            if (_isGrounded)
+            {
+                _timeSinceGrounded = 0f;
+                return;
+            }
+
+            _timeSinceGrounded += Time.deltaTime;
         }
 
         private void ProbeUsingSphere()
         {
-            //if (Physics.SphereCast(_probeRay))
+            if (Physics.SphereCast(_probeRay, _sphereRadius, out _sphereHit, _sphereMaxDistance, _layerMask))
+            {
+                _isGrounded = true;
+                _groundRotationFromSphere = Quaternion.FromToRotation(Vector3.up, _sphereHit.normal);
+                _groundAngleFromSphere = Vector3.Angle(_sphereHit.normal, Vector3.up);
+                _groundNormalFromSphere = _sphereHit.normal;
+            }
+            else
+            {
+                _isGrounded = false;
+                _groundRotationFromRay = Quaternion.identity;
+                _groundAngleFromSphere = 0f;
+                _groundNormalFromSphere = Vector3.up;
+            }
         }
 
         private void ProbeUsingRay()
         {
-            if (Physics.Raycast(_probeRay, out _rayHit, _rayMaxDistance, _layerMask))
+            if (Physics.Raycast(_probeRay, out _rayHit, Mathf.Infinity, _layerMask))
             {
                 _groundRotationFromRay = Quaternion.FromToRotation(Vector3.up, _rayHit.normal);
                 _groundAngleFromRay = Vector3.Angle(_rayHit.normal, Vector3.up);
@@ -79,5 +108,45 @@ namespace Actor.Movement
                 _distanceToGround = 0f;
             }
         }
+
+        #region Gizmos
+
+        [Header("Debug / Gizmos")]
+        [SerializeField] private bool _drawRayOrigin;
+        [SerializeField] private bool _drawRayProbe;
+        [SerializeField] private bool _drawSphereProbe;
+
+        private void OnDrawGizmos()
+        {
+            DrawRayOrigin();
+            DrawRayProbe();
+            DrawSphereProbe();
+        }
+
+        private void DrawRayOrigin()
+        {
+            if (!_drawRayOrigin) return;
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(_probeRay.origin, 0.1f);
+        }
+
+        private void DrawRayProbe()
+        {
+            if (!_drawRayProbe) return;
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(_probeRay);
+        }
+
+        private void DrawSphereProbe()
+        {
+            if (!_drawSphereProbe) return;
+
+            var gizmoSphereCenter = _probeRay.origin + Vector3.down * _sphereMaxDistance;
+            
+            Gizmos.color = _isGrounded ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(gizmoSphereCenter, _sphereRadius);
+        }
+
+        #endregion
     }
 }
