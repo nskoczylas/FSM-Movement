@@ -15,3 +15,14 @@ MonoBehaviour:
   <Idle>k__BackingField:
     CameraClamp: {x: -90, y: 90}
     CameraSensitivity: {x: 1, y: 1}
+    DownForce: 0
+  <Walk>k__BackingField:
+    Speed: 0
+    Acceleration: 0
+    Deceleration: 0
+    DownForce: 0
+  <Fall>k__BackingField:
+    Gravity: 20
+    InitialGravityKick: 0
+    DecelerationForce: 0
+    MaxFallSpeed: 500

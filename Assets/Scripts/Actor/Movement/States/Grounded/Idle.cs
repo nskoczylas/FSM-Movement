@@ -37,6 +37,7 @@ namespace Actor.Movement.States.Grounded
 
         public override void CheckSwitchState()
         {
+            CheckIsFalling(0.25f);
             if (_stateMachine.MovementInput.Move.magnitude != 0) _stateMachine.SwitchState(_stateMachine.WalkState);
         }
 
@@ -54,6 +55,12 @@ namespace Actor.Movement.States.Grounded
             _cameraPitch -= cameraPitchInput;
             _cameraPitch = Mathf.Clamp(_cameraPitch, _stateMachine.MovementSettings.Idle.CameraClamp.x, _stateMachine.MovementSettings.Idle.CameraClamp.y);
             _stateMachine.CameraRig.localRotation = Quaternion.Euler(_cameraPitch, 0, 0);
+        }
+
+        protected void CheckIsFalling(float allowedTimeSinceGrounded)
+        {
+            if (_stateMachine.ActorGroundProbe.IsGrounded) return;
+            if (_stateMachine.ActorGroundProbe.TimeSinceGrounded > allowedTimeSinceGrounded) _stateMachine.SwitchState(_stateMachine.FallState);
         }
     }
 }

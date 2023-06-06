@@ -18931,9 +18931,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28bf4b7b5892799419cbed2dbe060106, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 2050102862}
   _cameraRig: {fileID: 1421349204}
   CameraPitch: 0
+  LocalMoveVectors: {x: 0, y: 0, z: 0}
   _movementData: {fileID: 11400000, guid: fc38681c509a61c4e95a2d029dd476bd, type: 2}
 --- !u!143 &2050102862
 CharacterController:
@@ -18950,9 +18950,9 @@ CharacterController:
   m_Radius: 0.45
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Center: {x: 0, y: 0.91, z: 0}
 --- !u!114 &2050102863
 MonoBehaviour:
   m_ObjectHideFlags: 0

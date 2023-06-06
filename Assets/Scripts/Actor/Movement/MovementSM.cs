@@ -1,5 +1,6 @@
 using System;
 using Actor.Movement.Data;
+using Actor.Movement.States.Airborne;
 using Actor.Movement.States.Grounded;
 using FSM;
 using Player;
@@ -8,12 +9,16 @@ using UnityEngine;
 namespace Actor.Movement
 {
     [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(GroundProbe))]
     public class MovementSM : StateMachine
     {
         #region References
 
         public CharacterController Controller => _controller;
-        [SerializeField] private CharacterController _controller;
+        private CharacterController _controller;
+
+        public GroundProbe ActorGroundProbe => _groundProbe;
+        private GroundProbe _groundProbe;
 
         public Transform CameraRig => _cameraRig;
         [SerializeField] private Transform _cameraRig;
@@ -23,7 +28,8 @@ namespace Actor.Movement
 
         #endregion
         
-        public float CameraPitch;
+        [HideInInspector] public float CameraPitch;
+        [HideInInspector] public Vector3 LocalMoveVectors;
 
         public MovementData MovementSettings => _movementData;
         [SerializeField] private MovementData _movementData;
@@ -36,16 +42,21 @@ namespace Actor.Movement
         public Walk WalkState => _walk;
         private Walk _walk;
 
+        public Fall FallState => _fall;
+        private Fall _fall;
+
         #endregion
         
         private void Awake()
         {
             _controller = gameObject.GetComponent<CharacterController>();
-            
+            _groundProbe = gameObject.GetComponent<GroundProbe>();
+
             CreateMovementInputFromPlayer();
 
             CameraPitch = CameraRig.localRotation.x;
-            
+            LocalMoveVectors = Vector3.zero;
+
             CreateStates();
             SwitchState(_idle);
         }
@@ -54,6 +65,8 @@ namespace Actor.Movement
         {
             _idle = new Idle(this);
             _walk = new Walk(this);
+
+            _fall = new Fall(this);
         }
 
         private void CreateMovementInputFromPlayer()

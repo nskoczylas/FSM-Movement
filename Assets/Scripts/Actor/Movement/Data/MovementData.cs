@@ -1,4 +1,5 @@
-﻿using Actor.Movement.Data.Grounded;
+﻿using Actor.Movement.Data.Airborne;
+using Actor.Movement.Data.Grounded;
 using UnityEngine;
 
 namespace Actor.Movement.Data
@@ -8,5 +9,7 @@ namespace Actor.Movement.Data
     {
         [field: SerializeField] public IdleData Idle { get; private set; }
         [field: SerializeField] public WalkData Walk { get; private set; }
+        
+        [field: SerializeField] public FallData Fall { get; private set; }
     }
 }

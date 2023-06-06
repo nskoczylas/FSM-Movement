@@ -20,6 +20,7 @@ namespace Actor.Movement.States.Grounded
 
         public override void CheckSwitchState()
         {
+            CheckIsFalling(1.5f);
             if (_stateMachine.MovementInput.Move.magnitude == 0) _stateMachine.SwitchState(_stateMachine.IdleState);
         }
 
