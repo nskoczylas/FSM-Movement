@@ -6,7 +6,8 @@ namespace Actor.Movement.Data.Grounded
     [Serializable]
     public class IdleData
     {
-        [SerializeField] public Vector2 CameraClamp;
-        [SerializeField] public Vector2 CameraSensitivity;
+        public Vector2 CameraClamp;
+        public Vector2 CameraSensitivity; 
+        public float DownForce;
     }
 }
