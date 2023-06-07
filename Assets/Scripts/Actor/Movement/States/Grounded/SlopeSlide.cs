@@ -12,6 +12,12 @@ namespace Actor.Movement.States.Grounded
         {
         }
 
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            _currentSlideSpeed = _stateMachine.LocalMoveVectors.magnitude;
+        }
+
         public override void OnUpdate()
         {
             base.OnUpdate();
@@ -21,7 +27,10 @@ namespace Actor.Movement.States.Grounded
         public override void CheckSwitchState()
         {
             CheckIsFalling(0.1f);
-            if (!IsOnSteepTerrain()) _stateMachine.SwitchState(_stateMachine.IdleState);
+            if (!IsOnSteepTerrain())
+            {
+                if (_currentSlideSpeed < 1.5f) _stateMachine.SwitchState(_stateMachine.IdleState); 
+            }
         }
 
         private bool IsOnSteepTerrain()
@@ -36,6 +45,11 @@ namespace Actor.Movement.States.Grounded
                 var maxSlideSpeed = _stateMachine.MovementSettings.SlopeSlide.MaxSlideSpeed;
                 var accelerationTime = _stateMachine.MovementSettings.SlopeSlide.AccelerationTime;
                 _currentSlideSpeed = Mathf.SmoothDamp(_currentSlideSpeed, maxSlideSpeed, ref _smoothVelocity, accelerationTime);
+                
+                var slopeVector = Vector3.Cross(Vector3.up, _stateMachine.ActorGroundProbe.GroundNormalFromSphere);
+                slopeVector = Vector3.Cross(slopeVector, _stateMachine.ActorGroundProbe.GroundNormalFromSphere);
+
+                _stateMachine.LocalMoveVectors = slopeVector;
             }
             else
             {
@@ -43,12 +57,9 @@ namespace Actor.Movement.States.Grounded
                 _currentSlideSpeed = Mathf.SmoothDamp(_currentSlideSpeed, 0, ref _smoothVelocity, decelerationTime);
             }
             
-            var slopeVector = Vector3.Cross(Vector3.up, _stateMachine.ActorGroundProbe.GroundNormalFromSphere);
-            slopeVector = Vector3.Cross(slopeVector, _stateMachine.ActorGroundProbe.GroundNormalFromSphere);
-
-            slopeVector *= _currentSlideSpeed;
-
-            _stateMachine.Controller.Move(slopeVector * Time.deltaTime);
+            Debug.Log(_currentSlideSpeed);
+            
+            _stateMachine.Controller.Move(_stateMachine.LocalMoveVectors * _currentSlideSpeed * Time.deltaTime);
         }
     }
 }
