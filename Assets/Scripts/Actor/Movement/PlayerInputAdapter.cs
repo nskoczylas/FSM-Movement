@@ -9,18 +9,15 @@ namespace Actor.Movement
     {
         public Vector2 View => _view;
         public Vector2 Move => _move;
-        public Action<ActionStage> Jump => _jump;
-        public Action<ActionStage> Sprint => _sprint;
-        public Action<ActionStage> Crouch => _crouch;
+        public Action<ActionStage> Jump { get; set; }
+        public Action<ActionStage> Sprint { get; set; }
+        public Action<ActionStage> Crouch { get; set; }
 
         private PlayerInput _playerInput;
         private bool _isEnabled = false;
         
         private Vector2 _view;
         private Vector2 _move;
-        private Action<ActionStage> _jump;
-        private Action<ActionStage> _sprint;
-        private Action<ActionStage> _crouch;
 
         private void Awake()
         {
@@ -72,17 +69,17 @@ namespace Actor.Movement
 
         private void OnJump(InputAction.CallbackContext ctx)
         {
-            InvokeActionWithStage(_jump, ctx);
+            InvokeActionWithStage(Jump, ctx);
         }
 
         private void OnSprint(InputAction.CallbackContext ctx)
         {
-            InvokeActionWithStage(_sprint, ctx);
+            InvokeActionWithStage(Sprint, ctx);
         }
 
         private void OnCrouch(InputAction.CallbackContext ctx)
         {
-            InvokeActionWithStage(_crouch, ctx);
+            InvokeActionWithStage(Crouch, ctx);
         }
 
         private void InvokeActionWithStage(Action<ActionStage> inputAction, InputAction.CallbackContext ctx)
