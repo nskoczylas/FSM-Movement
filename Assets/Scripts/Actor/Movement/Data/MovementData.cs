@@ -10,6 +10,8 @@ namespace Actor.Movement.Data
         [field: SerializeField] public IdleData Idle { get; private set; }
         [field: SerializeField] public WalkData Walk { get; private set; }
         
+        [field: SerializeField] public SlopeSlideData SlopeSlide { get; private set; }
+        
         [field: SerializeField] public FallData Fall { get; private set; }
     }
 }

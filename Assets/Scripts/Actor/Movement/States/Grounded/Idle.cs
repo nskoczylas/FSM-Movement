@@ -38,6 +38,7 @@ namespace Actor.Movement.States.Grounded
         public override void CheckSwitchState()
         {
             CheckIsFalling(0.25f);
+            CheckIsSlidingDownSlope();
             if (_stateMachine.MovementInput.Move.magnitude != 0) _stateMachine.SwitchState(_stateMachine.WalkState);
         }
 
@@ -61,6 +62,12 @@ namespace Actor.Movement.States.Grounded
         {
             if (_stateMachine.ActorGroundProbe.IsGrounded) return;
             if (_stateMachine.ActorGroundProbe.TimeSinceGrounded > allowedTimeSinceGrounded) _stateMachine.SwitchState(_stateMachine.FallState);
+        }
+
+        protected void CheckIsSlidingDownSlope()
+        {
+            if (!(_stateMachine.Controller.slopeLimit < _stateMachine.ActorGroundProbe.GroundAngleFromRay)) return;
+            if (_stateMachine.Controller.slopeLimit < _stateMachine.ActorGroundProbe.GroundAngleFromSphere) _stateMachine.SwitchState(_stateMachine.SlopeSlideState);
         }
     }
 }

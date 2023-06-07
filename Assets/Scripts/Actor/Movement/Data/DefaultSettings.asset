@@ -21,6 +21,10 @@ MonoBehaviour:
     Acceleration: 0.1
     Deceleration: 0.05
     DownForce: 0.5
+  <SlopeSlide>k__BackingField:
+    MaxSlideSpeed: 8
+    AccelerationTime: 1
+    DecelerationTime: 0.2
   <Fall>k__BackingField:
     Gravity: 20
     InitialGravityKick: 0

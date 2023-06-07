@@ -23,6 +23,7 @@ namespace Actor.Movement.States.Grounded
         public override void CheckSwitchState()
         {
             CheckIsFalling(0.1f);
+            CheckIsSlidingDownSlope();
             if (_currentMoveInputVector.magnitude == 0 && _moveInputVector.magnitude == 0) _stateMachine.SwitchState(_stateMachine.IdleState);
         }
 

@@ -42,6 +42,9 @@ namespace Actor.Movement
         public Walk WalkState => _walk;
         private Walk _walk;
 
+        public SlopeSlide SlopeSlideState => _slopeSlide;
+        private SlopeSlide _slopeSlide;
+
         public Fall FallState => _fall;
         private Fall _fall;
 
@@ -65,6 +68,8 @@ namespace Actor.Movement
         {
             _idle = new Idle(this);
             _walk = new Walk(this);
+
+            _slopeSlide = new SlopeSlide(this);
 
             _fall = new Fall(this);
         }
