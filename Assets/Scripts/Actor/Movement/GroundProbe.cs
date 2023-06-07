@@ -34,7 +34,10 @@ namespace Actor.Movement
         private float _groundAngleFromRay;
         
         // Ground normal:
+        public Vector3 GroundNormalFromSphere => _groundNormalFromSphere;
         private Vector3 _groundNormalFromSphere;
+
+        public Vector3 GroundNormalFromRay => _groundNormalFromRay;
         private Vector3 _groundNormalFromRay;
 
         #endregion

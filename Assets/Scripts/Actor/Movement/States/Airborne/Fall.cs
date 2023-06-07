@@ -30,6 +30,7 @@ namespace Actor.Movement.States.Airborne
         public override void OnExit()
         {
             base.OnExit();
+            _stateMachine.LocalMoveVectors = Vector3.zero;
             _fallSpeed = 0;
         }
 
@@ -76,8 +77,7 @@ namespace Actor.Movement.States.Airborne
         {
             var movement = _stateMachine.LocalMoveVectors;
             movement.y = _fallSpeed * -1;
-
-            Debug.Log($"Trying to move using {movement} / Fall speed: {_fallSpeed}");
+            
             _stateMachine.Controller.Move(movement * Time.deltaTime);
         }
     }
