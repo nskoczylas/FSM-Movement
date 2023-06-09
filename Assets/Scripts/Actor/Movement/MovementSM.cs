@@ -29,6 +29,9 @@ namespace Actor.Movement
         #endregion
         
         [HideInInspector] public float CameraPitch;
+
+        [HideInInspector] public Vector2 CurrentMoveInput;
+        [HideInInspector] public Vector2 TargetMoveInput;
         [HideInInspector] public Vector3 LocalMoveVectors;
 
         public MovementData MovementSettings => _movementData;

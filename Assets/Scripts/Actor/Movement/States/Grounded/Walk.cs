@@ -6,22 +6,30 @@ namespace Actor.Movement.States.Grounded
 {
     public class Walk : Idle
     {
-        protected Vector2 _moveInputVector;
-        protected Vector2 _currentMoveInputVector;
+        protected Vector2 _moveInputVector
+        {
+            get { return _stateMachine.TargetMoveInput; }
+            set { _stateMachine.TargetMoveInput = value; }
+        }
+        protected Vector2 _currentMoveInputVector
+        {
+            get { return _stateMachine.CurrentMoveInput; }
+            set { _stateMachine.CurrentMoveInput = value; }
+        }
 
         protected Vector2 _smoothVelocity;
+        protected Vector3 _moveVector;
 
         protected bool _tiesToRun = false;
         
         public Walk(StateMachine stateMachine) : base(stateMachine)
         {
+            _stateMachine.MovementInput.Sprint += OnSprint;
         }
 
-        public override void OnEnter()
+        ~Walk()
         {
-            base.OnEnter();
-            _moveInputVector = _stateMachine.MovementInput.Move;
-            _stateMachine.MovementInput.Sprint += OnSprint;
+            _stateMachine.MovementInput.Sprint -= OnSprint;
         }
 
         public override void OnUpdate()
@@ -44,25 +52,16 @@ namespace Actor.Movement.States.Grounded
             if (_moveInputVector.magnitude == 0 && _currentMoveInputVector.magnitude == 0) _stateMachine.SwitchState(_stateMachine.IdleState);
         }
 
-        public override void OnExit()
-        {
-            base.OnExit();
-            _moveInputVector = Vector2.zero;
-            _tiesToRun = false;
-            _stateMachine.MovementInput.Sprint -= OnSprint;
-        }
-
         protected virtual void UpdateMove()
         {
             _moveInputVector = GetMoveInputVector(_stateMachine.MovementSettings.Walk);
             _currentMoveInputVector = GetCurrentMoveInputVector(_stateMachine.MovementSettings.Walk);
-            var moveVector = GetMoveVectorFromInput(_currentMoveInputVector);
+            _moveVector = GetMoveVectorFromInput(_currentMoveInputVector);
             
-            if (ShouldCorrectToSlope()) moveVector = AdjustMoveToGroundAngle(moveVector);
+            if (ShouldCorrectToSlope()) _moveVector = AdjustMoveToGroundAngle(_moveVector);
 
-            moveVector.y -= _stateMachine.MovementSettings.Walk.DownForce;
-            
-            Move(moveVector);
+            _moveVector.y -= _stateMachine.MovementSettings.Walk.DownForce;
+            Move(_moveVector);
         }
 
         protected virtual void OnSprint(ActionStage stage)

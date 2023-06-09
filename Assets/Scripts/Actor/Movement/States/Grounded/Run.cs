@@ -9,16 +9,17 @@ namespace Actor.Movement.States.Grounded
         {
         }
 
-        public override void OnEnter()
-        {
-            base.OnEnter();
-            _tiesToRun = true;
-        }
-
         public override void CheckSwitchState()
         {
             CheckIsFalling(0.1f);
             CheckIsSlidingDownSlope();
+
+            if (!_tiesToRun && _moveInputVector.magnitude != 0)
+            {
+                _stateMachine.SwitchState(_stateMachine.WalkState);
+                return;
+            }
+            
             if (_currentMoveInputVector.magnitude == 0 && _moveInputVector.magnitude == 0) _stateMachine.SwitchState(_stateMachine.IdleState);
         }
 
@@ -31,13 +32,7 @@ namespace Actor.Movement.States.Grounded
             if (ShouldCorrectToSlope()) moveVector = AdjustMoveToGroundAngle(moveVector);
 
             moveVector.y -= _stateMachine.MovementSettings.Walk.DownForce;
-            
             Move(moveVector);
-        }
-
-        protected override void OnSprint(ActionStage stage)
-        {
-            if (stage == ActionStage.Released) _stateMachine.SwitchState(_stateMachine.WalkState);
         }
     }
 }
