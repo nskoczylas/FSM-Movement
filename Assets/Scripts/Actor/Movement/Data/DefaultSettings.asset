@@ -33,5 +33,5 @@ MonoBehaviour:
   <Fall>k__BackingField:
     Gravity: 20
     InitialGravityKick: 0
-    DecelerationForce: 0
+    DecelerationForce: 5
     MaxFallSpeed: 500

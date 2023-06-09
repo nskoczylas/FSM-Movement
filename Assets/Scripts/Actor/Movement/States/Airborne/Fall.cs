@@ -50,8 +50,8 @@ namespace Actor.Movement.States.Airborne
             if (_stateMachine.MovementSettings.Fall.DecelerationForce == 0) return;
             if (_stateMachine.LocalMoveVectors.x == 0 && _stateMachine.LocalMoveVectors.z == 0) return;
 
-            _stateMachine.LocalMoveVectors.x -= ApplyDeceleration(_stateMachine.LocalMoveVectors.x);
-            _stateMachine.LocalMoveVectors.z -= ApplyDeceleration(_stateMachine.LocalMoveVectors.z);
+            _stateMachine.LocalMoveVectors.x = ApplyDeceleration(_stateMachine.LocalMoveVectors.x);
+            _stateMachine.LocalMoveVectors.z = ApplyDeceleration(_stateMachine.LocalMoveVectors.z);
         }
 
         private float ApplyDeceleration(float vector)
@@ -60,13 +60,15 @@ namespace Actor.Movement.States.Airborne
             
             if (vector > 0)
             {
-                vector -= _stateMachine.MovementSettings.Fall.DecelerationForce;
+                vector -= _stateMachine.MovementSettings.Fall.DecelerationForce * Time.deltaTime;
+                vector = Mathf.Round(vector * 100) * 0.01f;
                 if (vector <= 0) return 0;
             }
 
             if (vector < 0)
             {
-                vector += _stateMachine.MovementSettings.Fall.DecelerationForce;
+                vector += _stateMachine.MovementSettings.Fall.DecelerationForce * Time.deltaTime;
+                vector = Mathf.Round(vector * 100) * 0.01f;
                 if (vector >= 0) return 0;
             }
 
