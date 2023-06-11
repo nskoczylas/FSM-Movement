@@ -34,7 +34,7 @@ namespace Actor.Movement
         [HideInInspector] public Vector2 TargetMoveInput;
         [HideInInspector] public Vector3 LocalMoveVectors;
 
-        public MovementData MovementSettings => _movementData;
+        public MovementData Data => _movementData;
         [SerializeField] private MovementData _movementData;
 
         #region States

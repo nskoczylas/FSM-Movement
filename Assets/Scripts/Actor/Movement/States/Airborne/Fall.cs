@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Actor.Movement.States.Airborne
 {
-    public class Fall : Idle
+    public class Fall : MovementState
     {
         protected float _fallSpeed = 0f;
         
@@ -36,18 +36,18 @@ namespace Actor.Movement.States.Airborne
 
         private void SetFallSpeed()
         {
-            if (_fallSpeed == 0 && _stateMachine.MovementSettings.Fall.InitialGravityKick != 0)
+            if (_fallSpeed == 0 && _stateMachine.Data.Fall.InitialGravityKick != 0)
             {
-                _fallSpeed += _stateMachine.MovementSettings.Fall.InitialGravityKick;
+                _fallSpeed += _stateMachine.Data.Fall.InitialGravityKick;
                 return;
             }
 
-            _fallSpeed += _stateMachine.MovementSettings.Fall.Gravity * Time.deltaTime;
+            _fallSpeed += _stateMachine.Data.Fall.Gravity * Time.deltaTime;
         }
 
         private void SetMoveVectors()
         {
-            if (_stateMachine.MovementSettings.Fall.DecelerationForce == 0) return;
+            if (_stateMachine.Data.Fall.DecelerationForce == 0) return;
             if (_stateMachine.LocalMoveVectors.x == 0 && _stateMachine.LocalMoveVectors.z == 0) return;
 
             _stateMachine.LocalMoveVectors.x = ApplyDeceleration(_stateMachine.LocalMoveVectors.x);
@@ -60,14 +60,14 @@ namespace Actor.Movement.States.Airborne
             
             if (vector > 0)
             {
-                vector -= _stateMachine.MovementSettings.Fall.DecelerationForce * Time.deltaTime;
+                vector -= _stateMachine.Data.Fall.DecelerationForce * Time.deltaTime;
                 vector = Mathf.Round(vector * 100) * 0.01f;
                 if (vector <= 0) return 0;
             }
 
             if (vector < 0)
             {
-                vector += _stateMachine.MovementSettings.Fall.DecelerationForce * Time.deltaTime;
+                vector += _stateMachine.Data.Fall.DecelerationForce * Time.deltaTime;
                 vector = Mathf.Round(vector * 100) * 0.01f;
                 if (vector >= 0) return 0;
             }

@@ -11,27 +11,40 @@ namespace Actor.Movement.States.Grounded
 
         public override void CheckSwitchState()
         {
-            CheckIsFalling(0.1f);
-            CheckIsSlidingDownSlope();
+            if (ShouldBeFalling(0.25f))
+            {
+                _stateMachine.SwitchState(_stateMachine.FallState);
+                return;
+            }
 
-            if (!_tiesToRun && _moveInputVector.magnitude != 0)
+            if (ShouldBeSliding())
+            {
+                _stateMachine.SwitchState(_stateMachine.SlopeSlideState);
+                return;
+            }
+
+            if (!_tiesToRun && _targetMoveInput.magnitude != 0)
             {
                 _stateMachine.SwitchState(_stateMachine.WalkState);
                 return;
             }
-            
-            if (_currentMoveInputVector.magnitude == 0 && _moveInputVector.magnitude == 0) _stateMachine.SwitchState(_stateMachine.IdleState);
+
+            if (_currentMoveInput.magnitude == 0 && _targetMoveInput.magnitude == 0)
+            {
+                _stateMachine.SwitchState(_stateMachine.IdleState);
+                return;
+            }
         }
 
         protected override void UpdateMove()
         {
-            _moveInputVector = GetMoveInputVector(_stateMachine.MovementSettings.Run);
-            _currentMoveInputVector = GetCurrentMoveInputVector(_stateMachine.MovementSettings.Run);
-            var moveVector = GetMoveVectorFromInput(_currentMoveInputVector);
+            UpdateTargetMoveInputVector(_stateMachine.Data.Run.Speed);
+            UpdateCurrentMoveInputVector(_stateMachine.Data.Run.Acceleration, _stateMachine.Data.Run.Deceleration);
+            var moveVector = GetMoveVectorFromInput(_currentMoveInput);
 
             if (ShouldCorrectToSlope()) moveVector = AdjustMoveToGroundAngle(moveVector);
 
-            moveVector.y -= _stateMachine.MovementSettings.Walk.DownForce;
+            moveVector.y -= _stateMachine.Data.Walk.DownForce;
             Move(moveVector);
         }
     }
