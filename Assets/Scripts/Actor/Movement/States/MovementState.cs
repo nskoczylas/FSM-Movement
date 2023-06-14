@@ -5,7 +5,7 @@ namespace Actor.Movement.States
 {
     public abstract class MovementState : State
     {
-        protected new MovementSM _stateMachine;
+        protected new MovementStateMachine _stateMachine;
         
         protected Vector2 _currentMoveInput
         {
@@ -23,7 +23,7 @@ namespace Actor.Movement.States
         
         public MovementState(StateMachine stateMachine) : base(stateMachine)
         {
-            _stateMachine = (MovementSM)stateMachine;
+            _stateMachine = (MovementStateMachine)stateMachine;
         }
 
         public override void OnEnter()

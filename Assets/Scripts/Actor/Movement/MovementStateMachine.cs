@@ -10,7 +10,7 @@ namespace Actor.Movement
 {
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(GroundProbe))]
-    public class MovementSM : StateMachine
+    public class MovementStateMachine : StateMachine
     {
         #region References
 
