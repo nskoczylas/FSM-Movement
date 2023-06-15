@@ -26,7 +26,12 @@ namespace Actor.Movement.States.Grounded
 
         public override void CheckSwitchState()
         {
-            CheckIsFalling(0.1f);
+            if (ShouldBeFalling(0.25f))
+            {
+                _stateMachine.SwitchState(_stateMachine.FallState);
+                return;
+            }
+            
             if (!IsOnSteepTerrain())
             {
                 if (_currentSlideSpeed < 1.5f) _stateMachine.SwitchState(_stateMachine.IdleState); 
@@ -42,8 +47,8 @@ namespace Actor.Movement.States.Grounded
         {
             if (IsOnSteepTerrain())
             {
-                var maxSlideSpeed = _stateMachine.MovementSettings.SlopeSlide.MaxSlideSpeed;
-                var accelerationTime = _stateMachine.MovementSettings.SlopeSlide.AccelerationTime;
+                var maxSlideSpeed = _stateMachine.Data.SlopeSlide.MaxSlideSpeed;
+                var accelerationTime = _stateMachine.Data.SlopeSlide.AccelerationTime;
                 _currentSlideSpeed = Mathf.SmoothDamp(_currentSlideSpeed, maxSlideSpeed, ref _smoothVelocity, accelerationTime);
                 
                 var slopeVector = Vector3.Cross(Vector3.up, _stateMachine.ActorGroundProbe.GroundNormalFromSphere);
@@ -53,13 +58,11 @@ namespace Actor.Movement.States.Grounded
             }
             else
             {
-                var decelerationTime = _stateMachine.MovementSettings.SlopeSlide.DecelerationTime;
+                var decelerationTime = _stateMachine.Data.SlopeSlide.DecelerationTime;
                 _currentSlideSpeed = Mathf.SmoothDamp(_currentSlideSpeed, 0, ref _smoothVelocity, decelerationTime);
             }
-            
-            Debug.Log(_currentSlideSpeed);
-            
-            _stateMachine.Controller.Move(_stateMachine.LocalMoveVectors * _currentSlideSpeed * Time.deltaTime);
+
+            _stateMachine.Controller.Move(_stateMachine.LocalMoveVectors * (_currentSlideSpeed * Time.deltaTime));
         }
     }
 }

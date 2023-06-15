@@ -15,10 +15,11 @@
 ------------
 
 #### Current class inheritance diagram:
-![](https://images2.imgbox.com/88/64/FNV2lfLC_o.png)
+![](https://i.ibb.co/PTFQMbL/Inheritance.png)
 
 ------------
-
 ![](https://s11.gifyu.com/images/Su5M0.gif)
-![](https://s11.gifyu.com/images/Su5Mj.gif)
+
+#### GIFS below are only to show the capsule. Controller currently only supports FPP.
+![](https://s11.gifyu.com/images/Su5Mj.gif)\
 ![](https://s11.gifyu.com/images/Su5Mi.gif)

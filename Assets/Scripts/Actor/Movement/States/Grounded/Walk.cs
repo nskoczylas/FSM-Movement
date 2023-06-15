@@ -6,20 +6,7 @@ namespace Actor.Movement.States.Grounded
 {
     public class Walk : Idle
     {
-        protected Vector2 _moveInputVector
-        {
-            get { return _stateMachine.TargetMoveInput; }
-            set { _stateMachine.TargetMoveInput = value; }
-        }
-        protected Vector2 _currentMoveInputVector
-        {
-            get { return _stateMachine.CurrentMoveInput; }
-            set { _stateMachine.CurrentMoveInput = value; }
-        }
-
-        protected Vector2 _smoothVelocity;
         protected Vector3 _moveVector;
-
         protected bool _tiesToRun = false;
         
         public Walk(StateMachine stateMachine) : base(stateMachine)
@@ -40,27 +27,40 @@ namespace Actor.Movement.States.Grounded
 
         public override void CheckSwitchState()
         {
-            CheckIsFalling(0.1f);
-            CheckIsSlidingDownSlope();
+            if (ShouldBeFalling(0.25f))
+            {
+                _stateMachine.SwitchState(_stateMachine.FallState);
+                return;
+            }
 
-            if (_tiesToRun && _moveInputVector.magnitude != 0)
+            if (ShouldBeSliding())
+            {
+                _stateMachine.SwitchState(_stateMachine.SlopeSlideState);
+                return;
+            }
+
+            if (_tiesToRun && _targetMoveInput.magnitude != 0)
             {
                 _stateMachine.SwitchState(_stateMachine.RunState);
                 return;
             }
-            
-            if (_moveInputVector.magnitude == 0 && _currentMoveInputVector.magnitude == 0) _stateMachine.SwitchState(_stateMachine.IdleState);
+
+            if (_targetMoveInput.magnitude == 0 && _currentMoveInput.magnitude == 0)
+            {
+                _stateMachine.SwitchState(_stateMachine.IdleState);
+                return;
+            }
         }
 
         protected virtual void UpdateMove()
         {
-            _moveInputVector = GetMoveInputVector(_stateMachine.MovementSettings.Walk);
-            _currentMoveInputVector = GetCurrentMoveInputVector(_stateMachine.MovementSettings.Walk);
-            _moveVector = GetMoveVectorFromInput(_currentMoveInputVector);
+            UpdateTargetMoveInputVector(_stateMachine.Data.Walk.Speed);
+            UpdateCurrentMoveInputVector(_stateMachine.Data.Walk.Acceleration, _stateMachine.Data.Walk.Deceleration);
+            _moveVector = GetMoveVectorFromInput(_currentMoveInput);
             
             if (ShouldCorrectToSlope()) _moveVector = AdjustMoveToGroundAngle(_moveVector);
 
-            _moveVector.y -= _stateMachine.MovementSettings.Walk.DownForce;
+            _moveVector.y -= _stateMachine.Data.Walk.DownForce;
             Move(_moveVector);
         }
 
@@ -74,29 +74,13 @@ namespace Actor.Movement.States.Grounded
             _tiesToRun = false;
         }
 
-        protected Vector2 GetMoveInputVector(WalkData data)
-        {
-            return _stateMachine.MovementInput.Move * data.Speed;
-        }
-
-        protected Vector2 GetCurrentMoveInputVector(WalkData data)
-        {
-            if (_moveInputVector == _currentMoveInputVector) return _currentMoveInputVector;
-
-            if (_moveInputVector.magnitude == 0)
-            {
-                return _currentMoveInputVector.magnitude < 0.01 
-                    ? Vector2.zero
-                    : Vector2.SmoothDamp(_currentMoveInputVector, _moveInputVector, ref _smoothVelocity, data.Deceleration);
-            }
-            return Vector2.SmoothDamp(_currentMoveInputVector, _moveInputVector, ref _smoothVelocity, data.Acceleration);
-        }
-
         protected Vector3 GetMoveVectorFromInput(Vector2 moveInput)
         {
+            var transform = _stateMachine.transform;
             var moveVector = Vector3.zero;
-            moveVector += _stateMachine.transform.forward * moveInput.y;
-            moveVector += _stateMachine.transform.right * moveInput.x;
+            
+            moveVector += transform.forward * moveInput.y;
+            moveVector += transform.right * moveInput.x;
             
             return moveVector;
         }
